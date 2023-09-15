@@ -21,4 +21,10 @@ else:
     from mamingDL.models import Model
     from mamingDL.dataloaders import DataLoader
 
+    import mamingDL.cuda
+    import mamingDL.datasets
+    import mamingDL.functions
+    import mamingDL.optimizers
+    import mamingDL.dataloaders
+
 setup_variable()

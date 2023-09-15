@@ -81,9 +81,18 @@ class Variable:
     def T(self):
         return mamingDL.functions.transpose(self)
 
+    def to_cpu(self):
+        if self.data is not None:
+            self.data=mamingDL.cuda.as_numpy(self.data)
+
+    def to_gpu(self):
+        if self.data is not None:
+            self.data=mamingDL.cuda.as_cupy(self.data)
+
     def backward(self,retain_grad=False,create_graph=False):
         if self.grad is None:
-            self.grad=Variable(np.ones_like(self.data))
+            xp=mamingDL.cuda.get_array_module(self.data)
+            self.grad=Variable(xp.ones_like(self.data))
 
         funcs=[]
         seen_funcs=set()
