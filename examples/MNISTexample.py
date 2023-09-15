@@ -3,12 +3,12 @@ if '__file__' in globals():
     sys.path.append(os.path.join(os.path.expanduser(__file__),'..'))
 
 import numpy as np
-import maming
-from maming.datasets import MNIST
-from maming.dataloaders import DataLoader
-from maming.models import MLP
-from maming.optimizers import SGD
-import maming.functions as F
+import mamingDL
+from mamingDL.datasets import MNIST
+from mamingDL.dataloaders import DataLoader
+from mamingDL.models import MLP
+from mamingDL.optimizers import SGD
+import mamingDL.functions as F
 import matplotlib.pyplot as plt
 
 max_epochs=7
@@ -48,7 +48,7 @@ for epoch in range(max_epochs):
     train_losses.append(sum_loss)
     train_accs.append(sum_acc)
 
-    with maming.no_grad():
+    with mamingDL.no_grad():
         sum_loss=0
         sum_acc=0
         sum_len=0
