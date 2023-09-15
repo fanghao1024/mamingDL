@@ -128,9 +128,9 @@ class Variable:
 class Parameter(Variable):
     pass
 
-def as_array(x):
+def as_array(x,array_module=np):
     if np.isscalar(x):
-        return np.array(x)
+        return array_module.array(x)
     return x
 def as_variable(x):
     if not isinstance(x,Variable):
@@ -180,7 +180,7 @@ class Add(Function):
 
 
 def add(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Add()(x0,x1)
 
 class Mul_simple(Function):
@@ -205,7 +205,7 @@ class Mul(Function):
         return gx0,gx1
 
 def mul(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Mul()(x0,x1)
 
 class Sub(Function):
@@ -221,10 +221,10 @@ class Sub(Function):
         return gx0,gx1
 
 def sub(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Sub()(x0,x1)
 def rsub(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Sub()(x1,x0)
 
 class Div(Function):
@@ -241,10 +241,10 @@ class Div(Function):
         return gx0,gx1
 
 def div(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Div()(x0,x1)
 def rdiv(x0,x1):
-    x1=as_array(x1)
+    x1=as_array(x1,mamingDL.cuda.get_array_module(x0.data))
     return Div()(x1,x0)
 
 class Neg(Function):

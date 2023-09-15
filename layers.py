@@ -2,6 +2,7 @@ from mamingDL.core import Parameter
 import weakref
 import numpy as np
 import mamingDL.functions as F
+import mamingDL.cuda
 
 class Layer:
     def __init__(self):
@@ -58,13 +59,14 @@ class Linear(Layer):
             self.b=None
         else:
             self.b=Parameter(np.zeros(out_size,dtype=dtype),name='b')
-    def _initW(self):
+    def _initW(self,xp=np):
         I,O=self.in_size,self.out_size
-        W_data=np.random.randn(I,O).astype(self.dtype)*np.sqrt(1/I)
+        W_data=xp.random.randn(I,O).astype(self.dtype)*np.sqrt(1/I)
         self.W.data=W_data
     def forward(self,x):
         if self.in_size is None:
             self.in_size=x.shape[1]
-            self._initW()
+            xp=mamingDL.cuda.get_array_module(x)
+            self._initW(xp)
         y=F.linear(x,self.W,self.b)
         return y

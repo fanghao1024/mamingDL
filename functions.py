@@ -309,7 +309,8 @@ class SoftmaxCrossEntropy(Function):
 
         gy*=1/N
         y=softmax(x)
-        t_onehot=np.eye(CLS_NUM,dtype=t.dtype)[t.data]
+        xp=cuda.get_array_module(t.data)
+        t_onehot=xp.eye(CLS_NUM,dtype=t.dtype)[t.data]
         y=(y-t_onehot)*gy
         return y
 def softmax_cross_entropy(x,t):
