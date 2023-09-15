@@ -1,10 +1,12 @@
 from mamingDL.core import Variable,Function,as_variable,as_array
 from mamingDL import utils
+from mamingDL import cuda
 import numpy as np
 
 class Sin(Function):
     def forward(self,x):
-        y=np.sin(x)
+        xp=cuda.get_array_module(x)
+        y=xp.sin(x)
         return y
     def backward(self,gy):
         x,=self.inputs
@@ -15,7 +17,8 @@ def sin(x):
 
 class Cos(Function):
     def forward(self,x):
-        y=np.cos(x)
+        xp = cuda.get_array_module(x)
+        y=xp.cos(x)
         return y
     def backward(self,gy):
         x,=self.inputs
@@ -26,7 +29,8 @@ def cos(x):
 
 class Tanh(Function):
     def forward(self,x):
-        y=np.tanh(x)
+        xp = cuda.get_array_module(x)
+        y=xp.tanh(x)
         return y
     def backward(self,gy):
         y=self.outputs[0]()
@@ -37,7 +41,8 @@ def tanh(x):
 
 class Exp(Function):
     def forward(self,x):
-        y=np.exp(x)
+        xp = cuda.get_array_module(x)
+        y=xp.exp(x)
         return y
     def backward(self,gy):
         y=self.outputs[0]()
@@ -63,8 +68,11 @@ def reshape(x,shape):
     return Reshape(shape)(x)
 
 class Transpose(Function):
+    def __init__(self,axis=None):
+        self.axis=axis
+
     def forward(self,x):
-        y=np.transpose(x)
+        y=x.transpose(self.axis)
         return y
     def backward(self,gy):
         gx=transpose(gy)
@@ -78,7 +86,8 @@ class BroadcastTo(Function):
         self.shape=shape
     def forward(self,x):
         self.x_shape=x.shape
-        y=np.broadcast_to(x,self.shape)
+        xp = cuda.get_array_module(x)
+        y=xp.broadcast_to(x,self.shape)
         return y
     def backward(self,gy):
         gx=sum_to(gy,self.x_shape)
@@ -109,7 +118,7 @@ class Sum(Function):
         self.keepdims=keepdims
     def forward(self,x):
         self.x_shape=x.shape
-        y=np.sum(x,axis=self.axis,keepdims=self.keepdims)
+        y=x.sum(axis=self.axis,keepdims=self.keepdims)
         return y
     def backward(self,gy):
         gy=utils.reshape_sum_backward(gy,self.x_shape,self.axis,self.keepdims)
@@ -173,7 +182,8 @@ def sigmoid_simple(x):
 
 class Sigmoid(Function):
     def forward(self,x):
-        y=np.tanh(x*0.5)*0.5+0.5
+        xp = cuda.get_array_module(x)
+        y=xp.tanh(x*0.5)*0.5+0.5
         return y
     def backward(self,gy):
         y=self.outputs[0]()
@@ -184,7 +194,8 @@ def sigmoid(x):
 
 class ReLU(Function):
     def forward(self,x):
-        y=np.maximum(x,0.0)
+        xp = cuda.get_array_module(x)
+        y=xp.maximum(x,0.0)
         return y
     def backward(self,gy):
         x,=self.inputs
@@ -222,7 +233,8 @@ class Clip(Function):
         self.x_min=x_min
         self.x_max=x_max
     def forward(self,x):
-        y=np.clip(x,self.x_min,self.x_max)
+        xp = cuda.get_array_module(x)
+        y=xp.clip(x,self.x_min,self.x_max)
         return y
     def backward(self,gy):
         x,=self.inputs
@@ -234,7 +246,8 @@ def clip(x,x_min,x_max):
 
 class Log(Function):
     def forward(self,x):
-        y=np.log(x)
+        xp = cuda.get_array_module(x)
+        y=xp.log(x)
         return y
     def bacwkard(self,gy):
         x,=self.inputs
@@ -268,8 +281,9 @@ class Softmax(Function):
     def __init__(self,axis=1):
         self.axis=1
     def forward(self,x):
+        xp = cuda.get_array_module(x)
         y=x-x.max(axis=self.axis,keepdims=True)
-        y=np.exp(y)
+        y=xp.exp(y)
         y/=y.sum(axis=self.axis,keepdims=True)
         return y
     def backward(self,gy):
