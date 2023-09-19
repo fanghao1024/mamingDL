@@ -1,6 +1,6 @@
+import mamingDL
 from mamingDL.core import Variable,Function,as_variable,as_array
-from mamingDL import utils
-from mamingDL import cuda
+from mamingDL import utils,cuda
 import numpy as np
 
 class Sin(Function):
@@ -323,5 +323,17 @@ def accuracy(y,t):
     result=(pred==t.data)
     acc=result.mean()
     return Variable(as_array(acc))
+
+def dropout(x,dropout_rate=0.5):
+    x=as_variable(x)
+
+    if mamingDL.Config.train:
+        xp=cuda.get_array_module(x)
+        mask=xp.random.rand(*x.shape)>dropout_rate
+        scale=xp.array(1-dropout_rate).astype(x.dtype)
+        y=x*mask/scale
+        return y
+    else:
+        return x
 
 

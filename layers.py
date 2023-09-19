@@ -44,15 +44,17 @@ class Layer:
         for param in self.params():
             param.to_gpu()
 
+
     def _flatten_params(self,params_dict,parent_key=''):
         for name in self._params:
             obj=self.__dict__[name]
             key=parent_key+'/'+name if parent_key else name
 
             if isinstance(obj,Layer):
-                obj._flatten_paramss(params_dict,key)
+                obj._flatten_params(params_dict,key)
             else:
                 params_dict[key]=obj
+
 
     def save_weights(self,path):
         self.to_cpu()
@@ -71,10 +73,9 @@ class Layer:
     def load_weights(self,path):
         npz=np.load(path)
         params_dict={}
-        self._flatten_paramss(params_dict)
+        self._flatten_params(params_dict)
         for key,param in params_dict.items():
             param.data=npz[key]
-
 
 class Linear(Layer):
     def __init__(self,out_size,no_bias=False,dtype=np.float32,in_size=None):

@@ -11,8 +11,10 @@ if is_simple_core:
 else:
     from mamingDL.core import Variable
     from mamingDL.core import Function
+    from mamingDL.core import Config
     from mamingDL.core import using_config
     from mamingDL.core import no_grad
+    from mamingDL.core import test_mode
     from mamingDL.core import as_array
     from mamingDL.core import as_variable
     from mamingDL.core import setup_variable
