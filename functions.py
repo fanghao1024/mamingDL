@@ -68,18 +68,22 @@ def reshape(x,shape):
     return Reshape(shape)(x)
 
 class Transpose(Function):
-    def __init__(self,axis=None):
-        self.axis=axis
+    def __init__(self,axes=None):
+        self.axes=axes
 
     def forward(self,x):
-        y=x.transpose(self.axis)
+        y=x.transpose(self.axes)
         return y
     def backward(self,gy):
+        if self.axes is None:
+            return transpose(gy)
+        axes_len=len(self.axes)
+        inv_axes=tuple(np.argsort([ax % axes_len for ax in self.axes]))
         gx=transpose(gy)
         return gx
 
-def transpose(x):
-    return Transpose()(x)
+def transpose(x,axes=None):
+    return Transpose(axes)(x)
 
 class BroadcastTo(Function):
     def __init__(self,shape):
@@ -169,7 +173,7 @@ class Linear(Function):
         return y
     def backward(self,gy):
         x,W,b=self.inputs
-        gb=None if b is None else sum_to(gy,b.shape)
+        gb=None if b.data is None else sum_to(gy,b.shape)
         gx=matmul(gy,W.T)
         gW=matmul(x.T,gy)
         return gx,gW,gb
@@ -335,5 +339,22 @@ def dropout(x,dropout_rate=0.5):
         return y
     else:
         return x
+
+
+
+
+from mamingDL.function_conv import im2col
+from mamingDL.function_conv import col2im
+from mamingDL.function_conv import conv2d_simple
+
+from mamingDL.core import add
+from mamingDL.core import sub
+from mamingDL.core import rsub
+from mamingDL.core import mul
+from mamingDL.core import div
+from mamingDL.core import neg
+from mamingDL.core import neg
+from mamingDL.core import pow
+
 
 
