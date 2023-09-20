@@ -108,7 +108,7 @@ class Linear(Layer):
         return y
 
 class Conv2d(Layer):
-    def __init__(self,out_channels,kernel_size,stride=1,pad=0,nobias=False,dtype=np.float32,in_channels=None):
+    def __init__(self,out_channels,kernel_size,stride=1,pad=0,no_bias=False,dtype=np.float32,in_channels=None):
         super(Conv2d, self).__init__()
         self.in_channels=in_channels
         self.out_channels=out_channels
@@ -134,7 +134,7 @@ class Conv2d(Layer):
         self.W_data=W_data
 
     def forward(self,x):
-        if self.W_data is None:
+        if self.W.data is None:
             self.in_channels=x.shape[1]
             xp=cuda.get_array_module(x)
             self._init_W(xp)

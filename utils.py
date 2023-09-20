@@ -145,3 +145,15 @@ def pair(x):
         return x
     else:
         raise ValueError
+
+
+def max_backward_shape(x,axis):
+    if axis is None:
+        axis=range(x.dim)
+    elif isinstance(axis,int):
+        axis=(axis,)
+    else:
+        axis=axis
+
+    shape=[s if ax not in axis else 1 for ax,s in enumerate(x.shape)]
+    return shape

@@ -340,12 +340,34 @@ def dropout(x,dropout_rate=0.5):
     else:
         return x
 
+class Max(Function):
+    def __init__(self,axis=None,keepdims=False):
+        self.axis=axis
+        self.keepdims=keepdims
+    def forward(self,x):
+        y=x.max(axis=self.axis,keepdims=self.keepdims)
+        return y
+    def backward(self,gy):
+        x=self.inputs[0]
+        y=self.outputs[0]()
+
+        shape=utils.max_backward_shape(x,self.axis)
+        gy=reshape(gy,shape)
+        y=reshape(y,shape)
+        cond=(x.data==y.data)
+        gy=broadcast_to(gy,cond.shape)
+        return gy*cond
+
+def max(x,axis=None,keepdims=False):
+    return Max(axis,keepdims)(x)
+
 
 
 
 from mamingDL.function_conv import im2col
 from mamingDL.function_conv import col2im
 from mamingDL.function_conv import conv2d_simple
+from mamingDL.function_conv import pooling_simple
 
 from mamingDL.core import add
 from mamingDL.core import sub

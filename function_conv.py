@@ -71,7 +71,7 @@ def im2col_array(img,kernel_size,stride,pad,to_matrix=True):
             j_lim=j+SH*OH
             for i in range(KW):
                 i_lim=i+SW*OW
-                col[:,:,j,i,:,:]=img[:,:,j:j_lim,i:i_lim]
+                col[:,:,j,i,:,:]=img[:,:,j:j_lim:SH,i:i_lim:SW]
     if to_matrix:
         col=col.transpose((0,4,5,1,2,3)).reshape(N*OH*OW,-1)
     return col

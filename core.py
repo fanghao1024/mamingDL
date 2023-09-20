@@ -290,3 +290,7 @@ def setup_variable():
     Variable.__pow__=pow
     Variable.__getitem__=mamingDL.functions.get_item
 
+    Variable.matmul=mamingDL.functions.matmul
+    Variable.dot=mamingDL.functions.matmul
+    Variable.max=mamingDL.functions.max
+
