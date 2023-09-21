@@ -265,6 +265,27 @@ def get_item(x,shape):
     f=GetItem(shape)
     return f(x)
 
+def mean_squared_error_simple(x0,x1):
+    x0,x1=as_variable(x0),as_variable(x1)
+    diff=x0-x1
+    y=sum(diff**2)/len(diff)
+    return y
+
+class MeanSquaredError(Function):
+    def forward(self,x0,x1):
+        diff=x0-x1
+        y=(diff**2).sum()/len(diff)
+        return y
+    def backward(self,gy):
+        x0,x1=self.inputs
+        diff=x0-x1
+        gx0=gy*diff*(2./len(diff))
+        gx1=-gx0
+        return gx0,gx1
+
+def mean_squared_error(x0,x1):
+    return MeanSquareError()(x0,x1)
+
 def softmax_simple(x):
     x=as_variable(x)
     y=exp(x)
